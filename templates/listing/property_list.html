@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Properties{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+  <h1 class="h3 mb-0">All Properties</h1>
+  <div class="d-flex gap-2">
+    <input id="searchInput" type="search" class="form-control" placeholder="Search by title or city..." aria-label="Search properties">
+    {% if user.is_staff %}
+      <a href="{% url 'add_property' %}" class="btn btn-primary text-nowrap">+ Add</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-4" id="propertyGrid">
+  {% for p in properties %}
+    {% include "partials/property_card.html" %}
+  {% empty %}
+    <div class="col-12"><div class="alert alert-info mb-0">No properties available right now.</div></div>
+  {% endfor %}
+</div>
+
+<div id="noResults" class="alert alert-warning d-none mt-3">No property matches your search.</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    var input = document.getElementById('searchInput');
+    var items = document.querySelectorAll('.property-item');
+    var none = document.getElementById('noResults');
+    if (!input) { return; }
+    input.addEventListener('input', function () {
+      var q = input.value.toLowerCase().trim();
+      var shown = 0;
+      items.forEach(function (el) {
+        var ok = el.getAttribute('data-search').indexOf(q) !== -1;
+        el.classList.toggle('d-none', !ok);
+        if (ok) { shown++; }
+      });
+      none.classList.toggle('d-none', shown !== 0 || items.length === 0);
+    });
+  })();
+</script>
+{% endblock %}

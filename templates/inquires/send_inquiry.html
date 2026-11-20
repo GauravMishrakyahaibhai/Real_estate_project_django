@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Enquiry{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="h4 mb-3">Enquiry: {{ property.title }}</h1>
+        {% if sent %}
+          <div class="alert alert-success">Your enquiry has been sent!</div>
+        {% endif %}
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% include "partials/form_fields.html" %}
+          <button type="submit" class="btn btn-primary w-100">Send Enquiry</button>
+        </form>
+        <a href="{% url 'property_detail' property.id %}" class="d-block text-center mt-3">← Back to property</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

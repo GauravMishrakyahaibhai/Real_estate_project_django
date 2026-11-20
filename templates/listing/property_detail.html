@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ property.title }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'property_list' %}">Properties</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ property.title }}</li>
+  </ol>
+</nav>
+
+<div class="row g-4">
+  <div class="col-12 col-lg-7">
+
+    {% with extras=property.images.all %}
+    <div id="propCarousel" class="carousel slide rounded-3 overflow-hidden shadow-sm" data-bs-ride="carousel">
+      {% if extras %}
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#propCarousel" data-bs-slide-to="0" class="active" aria-label="Photo 1"></button>
+        {% for img in extras %}
+          <button type="button" data-bs-target="#propCarousel" data-bs-slide-to="{{ forloop.counter }}" aria-label="Photo {{ forloop.counter|add:1 }}"></button>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          {% if property.image %}
+            <img src="{{ property.image.url }}" class="d-block w-100" style="height:400px;object-fit:cover;" alt="{{ property.title }}">
+          {% else %}
+            <div class="d-flex align-items-center justify-content-center bg-secondary-subtle fs-1" style="height:400px;">🏠</div>
+          {% endif %}
+        </div>
+        {% for img in extras %}
+          <div class="carousel-item">
+            <img src="{{ img.image.url }}" class="d-block w-100" style="height:400px;object-fit:cover;" alt="{{ property.title }} photo {{ forloop.counter|add:1 }}">
+          </div>
+        {% endfor %}
+      </div>
+
+      {% if extras %}
+      <button class="carousel-control-prev" type="button" data-bs-target="#propCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#propCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+      {% endif %}
+    </div>
+    {% endwith %}
+
+    <h1 class="h2 mt-3">{{ property.title }}</h1>
+    <p class="text-body-secondary">📍 {{ property.address }}, {{ property.city }}</p>
+    <div class="fs-3 fw-bold text-primary mb-3">₹{{ property.price|floatformat:"0g" }}</div>
+
+    <div class="row g-2 text-center mb-3">
+      <div class="col-6"><div class="border rounded-3 p-3">🛏 <strong>{{ property.bedrooms }}</strong> Bedrooms</div></div>
+      <div class="col-6"><div class="border rounded-3 p-3">🛁 <strong>{{ property.bathrooms }}</strong> Bathrooms</div></div>
+    </div>
+
+    <h2 class="h5">Description</h2>
+    <p style="white-space: pre-line;">{{ property.description }}</p>
+
+    {% if user.is_staff %}
+      <div class="d-flex gap-2 mt-3">
+        <a href="{% url 'update_property' property.id %}" class="btn btn-outline-primary">Edit</a>
+        <a href="{% url 'delete_property' property.id %}" class="btn btn-outline-danger">Delete</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body p-4 text-center">
+        <h2 class="h5 mb-2">Interested in this property?</h2>
+        <p class="text-body-secondary">Send us an enquiry and we'll get back to you soon.</p>
+        <a href="{% url 'send_inquiry' property.id %}" class="btn btn-primary w-100">Send Enquiry</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

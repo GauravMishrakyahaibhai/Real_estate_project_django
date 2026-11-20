@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block hero %}
+<section class="hero text-white text-center py-5">
+  <div class="container py-4">
+    <h1 class="display-5 fw-bold">Find your dream property</h1>
+    <p class="lead mb-4">Flats, houses and plots in your city, all in one place.</p>
+    <a href="{% url 'property_list' %}" class="btn btn-light btn-lg px-4">Browse Properties</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block content %}
+<h2 class="h3 mb-3">Latest Properties</h2>
+<div class="row g-4">
+  {% for p in latest %}
+    {% include "partials/property_card.html" %}
+  {% empty %}
+    <div class="col-12"><div class="alert alert-info mb-0">No properties added yet.</div></div>
+  {% endfor %}
+</div>
+
+<div class="text-center mt-4">
+  <a href="{% url 'property_list' %}" class="btn btn-outline-primary">View All Properties</a>
+</div>
+{% endblock %}
